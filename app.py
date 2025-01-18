@@ -9,7 +9,7 @@ import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-from utils_txt import transform_xml, clean_dies, create_custom_xml
+from utils_txt import transform_xml, clean_dies, create_custom_xml, return_df_txt
 from utils_fusion import fusion_files, clean_txt, remove_whitespace, clean_dataframe_for_xml
 
 txt_col = ['#Name', 'Title', 'Emulator', 'CloneOf', 'Year', 'Manufacturer',
@@ -38,13 +38,19 @@ with col1:
             xml_uploaded = io.StringIO(uploaded_tab.getvalue().decode('utf-8'))
             df_xml = pd.read_xml(xml_uploaded, parser='etree')
             name_xml = uploaded_tab.name.split(".")
-            new_xml_name = f"New_{name_xml[0]}.xml".replace(" ", "_")
+            new_xml_name = f"New_{name_xml[0]}.txt".replace(" ", "_")
+
+            fusion_for_txt = fusion_files(df_xml, df_txt)
+            new_df_fusion_txt = return_df_txt(fusion_for_txt)
+            csv_buffer1 = io.StringIO() 
+            new_df_fusion_txt.to_csv(csv_buffer1, sep=";", index=False) 
+            csv_content1 = csv_buffer1.getvalue()
             
             valid_xml= st.download_button(
                 label="Télécharger au format txt",
-                data="",
+                data=csv_content1,
                 file_name = new_xml_name,
-                mime="application/xml"
+                mime="application/txt"
                 )
 
 with col2:
@@ -111,10 +117,17 @@ if uploaded_tab is not None and uploaded_txt is not None:
                 file_name=new_file_xml_name,
                 mime="application/xml"
             )
+
+        new_file_txt_name = f"Fusion_{name_txt[0]}_{name_xml[0]}.txt".replace(" ", "_")
+        new_df_txt = return_df_txt(fusion)
+        csv_buffer = io.StringIO() 
+        new_df_txt.to_csv(csv_buffer, sep=";", index=False) 
+        csv_content = csv_buffer.getvalue()
+
         with col4:
             valid_fusion_txt = st.download_button(
                 label= "Télécharger la fusion au format txt",
-                data ="",
-                file_name="",
+                data = csv_content,
+                file_name=new_file_txt_name,
                 mime="application/txt"
             )
