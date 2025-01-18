@@ -77,10 +77,18 @@ def create_custom_xml(df):
     return xml_str
 
 def return_df_txt(df):
-    new_df_txt = df[['name', 'description', 'emulator', 'cloneof', 'year', 'manufacturer', 'genre', 'players', 'rotation', 'control', 'status', 
-                        'displaycount', 'displaytype', 'altromname', 'alttitle', 'extra', 'buttons', 'series', 'language', 'region', 'rating']]
-    new_df_txt.rename(columns={"name": "#Name", "description": "Title", "emulator":"Emulator", "cloneof":"CloneOf", "year":"Year", 
-                           "manufacturer":"Manufacturer", "genre":"Category", "players":"Players", "rotation":"Rotation", "control":"Control", 
+    print(df.columns)
+    col_name = ['name', 'description', 'emulator', 'cloneof', 'year', 'manufacturer', 'genre', 'players', 'rotation', 'control', 'status', 'displaycount', 'displaytype', 'altromname', 'alttitle', 'extra', 'buttons', 'series', 'language', 'region', 'rating']
+    new_df_txt =pd.DataFrame()
+
+    for col in col_name:
+        if col in df.columns:
+            new_df_txt[col] = df[col]
+        else:
+            new_df_txt[col] = None
+    
+    new_df_txt.rename(columns={"name": "#Name", "Title": "Title", "emulator":"Emulator", "cloneof":"CloneOf", "year":"Year", 
+                           "manufacturer":"Manufacturer", "Category":"Category", "players":"Players", "rotation":"Rotation", "control":"Control", 
                            "status":"Status", "displaycount":"DisplayCount", "displaytype":"DisplayType", "altromname":"AltRomname", 
                            "alttitle":"AltTitle", "extra":"Extra", "buttons":"Buttons", "series":"Series", "language":"Language",
                            "region":"Region", "rating":"Rating"}, inplace= True)

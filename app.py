@@ -37,6 +37,7 @@ with col1:
         with st.spinner('Chargement du fichier en cours...'):
             xml_uploaded = io.StringIO(uploaded_tab.getvalue().decode('utf-8'))
             df_xml = pd.read_xml(xml_uploaded, parser='etree')
+            print("df_xml.columns : ", df_xml.columns)
             name_xml = uploaded_tab.name.split(".")
             new_xml_name = f"New_{name_xml[0]}.txt".replace(" ", "_")
 
