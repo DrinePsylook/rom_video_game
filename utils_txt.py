@@ -1,11 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import xml.etree.ElementTree as ET
-from xml.dom import minidom
-import re
-import os
-import io
+
 
 def clean_dies(file_verif): 
     # Conversion des bytes en string
