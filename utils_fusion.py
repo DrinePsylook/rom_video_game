@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import io
 
-from utils_txt import clean_dies, adjust_columns, clean_xml_string, transform_xml
+from utils_txt import clean_dies, adjust_columns, clean_xml_string, transform_xml, create_custom_xml
 
 def fusion_files(df_xml, df_txt):
     df_txt = df_txt.rename(columns={"#Name":"name"})
@@ -33,22 +33,12 @@ def fusion_files(df_xml, df_txt):
 
 
 def clean_txt(file):
-    txt_upld = clean_dies(file.getvalue())
-    txt_upld_str = "\n".join(txt_upld)
+    file_uploaded = clean_dies(file.getvalue())
 
-    header = txt_upld_str.strip().split(';') 
-    data_lines = txt_upld[1:] 
-    if len(data_lines) > 0 and len(data_lines[0].split(';')) > len(header):         
-        adjusted_data = adjust_columns(header, data_lines) 
-    else: 
-        adjusted_data = data_lines 
-    
-    header_str = ";".join(header)
-    adjusted_data_str = "\n".join(["".join(row) for row in adjusted_data])
-    new_txt_upld_str = f"{header_str}\n{adjusted_data_str}"
-    # print(new_txt_upld_str)
-    
-    return new_txt_upld_str
+            # transformation du fichier txt uploadé
+    df_cleaned = transform_xml(file_uploaded)
+    print(df_cleaned[0:10])
+    return df_cleaned
 
 def remove_whitespace(df): 
     for col in df.columns: 

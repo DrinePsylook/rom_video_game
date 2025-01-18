@@ -5,9 +5,9 @@ import os
 import io
 import tempfile
 
-# import warnings
+import warnings
 
-# warnings.simplefilter(action='ignore', category=FutureWarning)
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 from utils_txt import transform_xml, clean_dies, create_custom_xml, return_df_txt
 from utils_fusion import fusion_files, clean_txt, remove_whitespace, clean_dataframe_for_xml
@@ -95,10 +95,8 @@ if uploaded_tab is not None and uploaded_txt is not None:
     df_xml = pd.read_xml(xml_uploaded, parser='etree')
 
     # fichier txt
-    txt_upld = clean_txt(uploaded_txt)
-    new_txt_upld = io.StringIO(txt_upld)
-    df_txt = pd.read_csv(new_txt_upld, delimiter=";")
-    df_txt = remove_whitespace(df_txt)
+    new_txt_upld = clean_txt(uploaded_txt)
+    df_txt = remove_whitespace(new_txt_upld)
 
     new_file_xml_name = f"Fusion_{name_txt[0]}_{name_xml[0]}.xml".replace(" ", "_")
 
