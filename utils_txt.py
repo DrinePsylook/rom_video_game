@@ -15,7 +15,7 @@ def clean_dies(file_verif):
     return cleaned_lines
 
 def clean_xml_string(text):
-    if pd.isna(text):
+    if text is None or pd.isna(text):
         return ""
     
     text = str(text)
@@ -56,7 +56,7 @@ def transform_xml(cleaned_lines):
 
     file_xml = df_file.reset_index(drop=True)
     file_xml.columns = file_xml.columns.str.lower()
-    print("file xml colonnes = ",file_xml.columns)
+    # print("file xml colonnes = ",file_xml.columns)
     
     for col in df_file.columns :
         df_file[col] = df_file[col].apply(clean_xml_string)
