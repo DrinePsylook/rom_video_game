@@ -15,4 +15,4 @@ EXPOSE 80
 
 #HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-ENTRYPOINT ["streamlit", "run", "app.py", "--server.port=80", "--server.address=0.0.0.0"]
+ENTRYPOINT ["rom_video_game", "run", "app.py", "--server.port=80", "--server.address=0.0.0.0"]
