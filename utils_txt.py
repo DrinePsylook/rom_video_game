@@ -77,10 +77,10 @@ def create_custom_xml(df):
     return xml_str
 
 def return_df_txt(df):
-    new_df_txt = df[['name', 'title', 'emulator', 'cloneof', 'year', 'manufacturer', 'category', 'players', 'rotation', 'control', 'status', 
+    new_df_txt = df[['name', 'description', 'emulator', 'cloneof', 'year', 'manufacturer', 'genre', 'players', 'rotation', 'control', 'status', 
                         'displaycount', 'displaytype', 'altromname', 'alttitle', 'extra', 'buttons', 'series', 'language', 'region', 'rating']]
-    new_df_txt.rename(columns={"name": "#Name", "title": "Title", "emulator":"Emulator", "cloneof":"CloneOf", "year":"Year", 
-                           "manufacturer":"Manufacturer", "category":"Category", "players":"Players", "rotation":"Rotation", "control":"Control", 
+    new_df_txt.rename(columns={"name": "#Name", "description": "Title", "emulator":"Emulator", "cloneof":"CloneOf", "year":"Year", 
+                           "manufacturer":"Manufacturer", "genre":"Category", "players":"Players", "rotation":"Rotation", "control":"Control", 
                            "status":"Status", "displaycount":"DisplayCount", "displaytype":"DisplayType", "altromname":"AltRomname", 
                            "alttitle":"AltTitle", "extra":"Extra", "buttons":"Buttons", "series":"Series", "language":"Language",
                            "region":"Region", "rating":"Rating"}, inplace= True)
