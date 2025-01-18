@@ -5,9 +5,9 @@ import os
 import io
 import tempfile
 
-import warnings
+# import warnings
 
-warnings.simplefilter(action='ignore', category=FutureWarning)
+# warnings.simplefilter(action='ignore', category=FutureWarning)
 
 from utils_txt import transform_xml, clean_dies, create_custom_xml, return_df_txt
 from utils_fusion import fusion_files, clean_txt, remove_whitespace, clean_dataframe_for_xml
