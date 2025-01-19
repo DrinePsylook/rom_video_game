@@ -28,6 +28,8 @@ def fusion_files(df_xml, df_txt):
 
     # drop des colonnes _y et _x devenues inutiles 
     df_combined = df_combined.drop(columns=[f"{col}_y" for col in combined_columns if f"{col}_y" in df_combined.columns] + [f"{col}_x" for col in combined_columns if f"{col}_x" in df_combined.columns])
+
+    df_combined = df_combined.drop_duplicates()
         
     return df_combined
 
@@ -50,3 +52,7 @@ def clean_dataframe_for_xml(df):
     for col in df.columns: 
         df[col] = df[col].apply(clean_xml_string) 
     return df
+
+def dl_fusion_xml(xml1, xml2):
+    new_xml = ""
+    return new_xml

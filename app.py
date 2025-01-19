@@ -3,20 +3,18 @@ import pandas as pd
 import numpy as np
 import os
 import io
-import tempfile
+
 
 import warnings
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
+from utils import df_txt, temp_dir
 from utils_txt import transform_xml, clean_dies, create_custom_xml, return_df_txt
-from utils_fusion import fusion_files, clean_txt, remove_whitespace, clean_dataframe_for_xml
+from utils_fusion import fusion_files, clean_txt, remove_whitespace, dl_fusion_xml
+from utils_dl import dl_txt_from_xml, dl_xml_from_txt
 
-txt_col = ['#Name', 'Title', 'Emulator', 'CloneOf', 'Year', 'Manufacturer',
-            'Category', 'Players', 'Rotation', 'Control', 'Status', 'DisplayCount',
-            'DisplayType', 'AltRomname', 'AltTitle', 'Extra', 'Buttons', 'Series',
-            'Language', 'Region', 'Rating']
-df_txt = pd.DataFrame(columns=txt_col)
+
 
 st.set_page_config(page_title="ROM video games",
                    page_icon="🎮",
@@ -24,8 +22,8 @@ st.set_page_config(page_title="ROM video games",
 
 st.title("Transformation et Téléchargement de fichiers ROM")
 
-col1, col2 = st.columns(2)
-temp_dir = tempfile.mkdtemp()
+col1, col_a, col2, col_b = st.columns([10, 2, 10, 2])
+
 
 with col1:
     # uploade les fichiers de type xml, xls
@@ -33,26 +31,24 @@ with col1:
                                     accept_multiple_files=False,
                                     type=['xml', 'xls', 'xsls'])
     
-    if uploaded_tab is not None:
-        with st.spinner('Chargement du fichier en cours...'):
-            xml_uploaded = io.StringIO(uploaded_tab.getvalue().decode('utf-8'))
-            df_xml = pd.read_xml(xml_uploaded, parser='etree')
-            print("df_xml.columns : ", df_xml.columns)
-            name_xml = uploaded_tab.name.split(".")
-            new_xml_name = f"New_{name_xml[0]}.txt".replace(" ", "_")
 
-            fusion_for_txt = fusion_files(df_xml, df_txt)
-            new_df_fusion_txt = return_df_txt(fusion_for_txt)
-            csv_buffer1 = io.StringIO() 
-            new_df_fusion_txt.to_csv(csv_buffer1, sep=";", index=False) 
-            csv_content1 = csv_buffer1.getvalue()
-            
-            valid_xml= st.download_button(
-                label="Télécharger au format txt",
-                data=csv_content1,
-                file_name = new_xml_name,
-                mime="application/txt"
-                )
+# with col_a:
+    # ajout_xml_file = st.button("Ajout XML")
+
+# second_uploaded_xml = None
+
+# if ajout_xml_file:
+#     with col1:
+#         second_uploaded_xml = st.file_uploader("Choisissez un second fichier xml ou xls",
+#                                         accept_multiple_files=False,
+#                                         type=['xml', 'xls', 'xsls'])
+
+if uploaded_tab is not None:
+    with st.spinner('Chargement du fichier en cours...'):
+        dl_txt_from_xml(uploaded_tab, df_txt)
+
+# if uploaded_tab is not None and second_uploaded_xml is not None:
+#     dl_fusion_xml(uploaded_tab, second_uploaded_xml)
 
 with col2:
     #uploade fichier txt
@@ -62,31 +58,13 @@ with col2:
 
     if uploaded_txt is not None :
         with st.spinner('Chargement du fichier en cours...'):
-            # st.write(uploaded_txt.getvalue())
-            file_uploaded = clean_dies(uploaded_txt.getvalue())
+            dl_xml_from_txt(uploaded_txt)
 
-            # transformation du fichier txt uploadé
-            df_cleaned = transform_xml(file_uploaded)
-            xml_content = create_custom_xml(df_cleaned)
-            
-            # récupération du nom initial du txt pour renommer le nouveau fichier downloadé
-            name_txt = uploaded_txt.name.split(".")
-            new_df_name = f"New_{name_txt[0]}.xml".replace(" ", "_")
+with col_b:
+    ajout_txt_file = st.button("Ajout txt")
+    
 
-            # utilisation du temp pour télécharger le fichier dans le dossier téléchargement
-            path = os.path.join(temp_dir, new_df_name)
-
-            # affichage du bouton de téléchargement du fichier
-            valid_txt= st.download_button(
-                label="Télécharger au format xml",
-                data=xml_content,
-                file_name = new_df_name,
-                mime="application/xml"
-                )
-            
-            if valid_txt: 
-                st.rerun()
-
+                
 
 if uploaded_tab is not None and uploaded_txt is not None:
     st.subheader("Fusion", divider = True)
@@ -99,6 +77,8 @@ if uploaded_tab is not None and uploaded_txt is not None:
     new_txt_upld = clean_txt(uploaded_txt)
     df_txt = remove_whitespace(new_txt_upld)
 
+    name_txt = uploaded_txt.name.split(".")
+    name_xml = uploaded_tab.name.split(".")
     new_file_xml_name = f"Fusion_{name_txt[0]}_{name_xml[0]}.xml".replace(" ", "_")
     with st.spinner('Fusion du fichier en cours...'):
         valid_fusion = st.button("Fusionner les fichiers XML et txt")
