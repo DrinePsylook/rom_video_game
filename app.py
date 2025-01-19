@@ -60,8 +60,8 @@ with col2:
         with st.spinner('Chargement du fichier en cours...'):
             dl_xml_from_txt(uploaded_txt)
 
-with col_b:
-    ajout_txt_file = st.button("Ajout txt")
+# with col_b:
+#     ajout_txt_file = st.button("Ajout txt")
     
 
                 
