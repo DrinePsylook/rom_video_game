@@ -100,8 +100,8 @@ if uploaded_tab is not None and uploaded_txt is not None:
     df_txt = remove_whitespace(new_txt_upld)
 
     new_file_xml_name = f"Fusion_{name_txt[0]}_{name_xml[0]}.xml".replace(" ", "_")
-
-    valid_fusion = st.button("Fusionner les fichiers XML et txt")
+    with st.spinner('Chargement du fichier en cours...'):
+        valid_fusion = st.button("Fusionner les fichiers XML et txt")
     if valid_fusion:        
         st.subheader("Télécharger les fichiers fusionnés", divider=True)
 
@@ -110,12 +110,13 @@ if uploaded_tab is not None and uploaded_txt is not None:
 
         col3, col4, col5 = st.columns([2, 2, 8])
         with col3 :
-            valid_fusion_xml = st.download_button(
-                label= "Télécharger la fusion au format XML",
-                data = xml_content,
-                file_name=new_file_xml_name,
-                mime="application/xml"
-            )
+            with st.spinner('Chargement du fichier en cours...'):
+                valid_fusion_xml = st.download_button(
+                    label= "Télécharger la fusion au format XML",
+                    data = xml_content,
+                    file_name=new_file_xml_name,
+                    mime="application/xml"
+                )
 
         new_file_txt_name = f"Fusion_{name_txt[0]}_{name_xml[0]}.txt".replace(" ", "_")
         new_df_txt = return_df_txt(fusion)
@@ -124,9 +125,10 @@ if uploaded_tab is not None and uploaded_txt is not None:
         csv_content = csv_buffer.getvalue()
 
         with col4:
-            valid_fusion_txt = st.download_button(
-                label= "Télécharger la fusion au format txt",
-                data = csv_content,
-                file_name=new_file_txt_name,
-                mime="application/txt"
-            )
+            with st.spinner('Chargement du fichier en cours...'):
+                valid_fusion_txt = st.download_button(
+                    label= "Télécharger la fusion au format txt",
+                    data = csv_content,
+                    file_name=new_file_txt_name,
+                    mime="application/txt"
+                )
