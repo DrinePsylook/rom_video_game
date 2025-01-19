@@ -100,7 +100,7 @@ if uploaded_tab is not None and uploaded_txt is not None:
     df_txt = remove_whitespace(new_txt_upld)
 
     new_file_xml_name = f"Fusion_{name_txt[0]}_{name_xml[0]}.xml".replace(" ", "_")
-    with st.spinner('Chargement du fichier en cours...'):
+    with st.spinner('Fusion du fichier en cours...'):
         valid_fusion = st.button("Fusionner les fichiers XML et txt")
     if valid_fusion:        
         st.subheader("Télécharger les fichiers fusionnés", divider=True)
@@ -110,7 +110,7 @@ if uploaded_tab is not None and uploaded_txt is not None:
 
         col3, col4, col5 = st.columns([2, 2, 8])
         with col3 :
-            with st.spinner('Chargement du fichier en cours...'):
+            with st.spinner('Téléchargement du fichier en cours...'):
                 valid_fusion_xml = st.download_button(
                     label= "Télécharger la fusion au format XML",
                     data = xml_content,
@@ -125,7 +125,7 @@ if uploaded_tab is not None and uploaded_txt is not None:
         csv_content = csv_buffer.getvalue()
 
         with col4:
-            with st.spinner('Chargement du fichier en cours...'):
+            with st.spinner('Téléchargement du fichier en cours...'):
                 valid_fusion_txt = st.download_button(
                     label= "Télécharger la fusion au format txt",
                     data = csv_content,
