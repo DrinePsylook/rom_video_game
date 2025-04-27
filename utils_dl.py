@@ -4,13 +4,24 @@ import numpy as np
 import os
 import io
 import tempfile
+import chardet
 
 from utils import temp_dir
 from utils_fusion import fusion_files
 from utils_txt import return_df_txt, transform_xml, create_custom_xml, clean_dies
 
 def dl_txt_from_xml(uploaded_tab, df_txt):
-    xml_uploaded = io.StringIO(uploaded_tab.getvalue().decode('utf-8'))
+    # Détection automatique de l'encodage
+    raw_bytes = uploaded_tab.getvalue()
+    result = chardet.detect(raw_bytes)
+    encoding = result['encoding'] if result['encoding'] else 'utf-8'
+    
+    try:
+        xml_uploaded = io.StringIO(raw_bytes.decode(encoding))
+    except UnicodeDecodeError:
+        # En cas d'échec, on tente un encodage de secours
+        xml_uploaded = io.StringIO(raw_bytes.decode('latin-1'))
+    
     df_xml = pd.read_xml(xml_uploaded, parser='etree')
     print("df_xml.columns : ", df_xml.columns)
     name_xml = uploaded_tab.name.split(".")
