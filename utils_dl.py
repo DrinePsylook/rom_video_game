@@ -11,18 +11,36 @@ from utils_fusion import fusion_files
 from utils_txt import return_df_txt, transform_xml, create_custom_xml, clean_dies
 
 def dl_txt_from_xml(uploaded_tab, df_txt):
-    # Détection automatique de l'encodage
+    file_name = uploaded_tab.name
+    ext = file_name.split('.')[-1].lower()
     raw_bytes = uploaded_tab.getvalue()
-    result = chardet.detect(raw_bytes)
-    encoding = result['encoding'] if result['encoding'] else 'utf-8'
-    
-    try:
-        xml_uploaded = io.StringIO(raw_bytes.decode(encoding))
-    except UnicodeDecodeError:
-        # En cas d'échec, on tente un encodage de secours
-        xml_uploaded = io.StringIO(raw_bytes.decode('latin-1'))
-    
-    df_xml = pd.read_xml(xml_uploaded, parser='etree')
+
+    if ext in ['xml']:
+        # Gestion XML
+        result = chardet.detect(raw_bytes)
+        encoding = result['encoding'] if result['encoding'] else 'utf-8'
+        try:
+            xml_uploaded = io.StringIO(raw_bytes.decode(encoding))
+        except UnicodeDecodeError:
+            xml_uploaded = io.StringIO(raw_bytes.decode('latin-1'))
+        try:
+            df_xml = pd.read_xml(xml_uploaded, parser='etree')
+        except Exception as e:
+            st.error(f"Erreur lors de la lecture du XML : {e}")
+            return
+
+    elif ext in ['xls', 'xlsx']:
+        # Gestion Excel
+        try:
+            df_xml = pd.read_excel(io.BytesIO(raw_bytes))
+        except Exception as e:
+            st.error(f"Erreur lors de la lecture du fichier Excel : {e}")
+            return
+
+    else:
+        st.error("Format de fichier non supporté. Veuillez uploader un fichier XML ou Excel.")
+        return
+
     print("df_xml.columns : ", df_xml.columns)
     name_xml = uploaded_tab.name.split(".")
     new_xml_name = f"New_{name_xml[0]}.txt".replace(" ", "_")
@@ -38,7 +56,7 @@ def dl_txt_from_xml(uploaded_tab, df_txt):
         data=csv_content1,
         file_name = new_xml_name,
         mime="application/txt"
-        )
+    )
     
 def dl_xml_from_txt(uploaded_txt):
     file_uploaded = clean_dies(uploaded_txt.getvalue())
